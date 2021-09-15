@@ -13,7 +13,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": [ "./build/", "./src/types.d.ts" ],
+  "files": [
+    "./build/",
+    "./src/types.d.ts"
+  ],
   "keywords": [],
   "author": "lily.slvr",
   "license": "UNLICENSED",
