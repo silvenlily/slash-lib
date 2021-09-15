@@ -20,7 +20,7 @@ build:
 
 publish:
   before_script:
-    - rm -rf node_modules && yarn install --frozen-lockfile
+    - yarn install --frozen-lockfile
     - |
       {
         echo "@${CI_PROJECT_ROOT_NAMESPACE}:registry=${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/"
