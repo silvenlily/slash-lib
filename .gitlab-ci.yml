@@ -10,12 +10,13 @@ variables:
 build:
   stage: build
   script:
-    - yarn install
-    - yarn build
+    - npm install
+    - npm build
   artifacts:
     paths:
+      - package.lock
       - build
-    expire_in: 1 week
+    expire_in: 1 hour
 
 publish:
   before_script:
