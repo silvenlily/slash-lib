@@ -1,5 +1,5 @@
 import type slashLib from "./types";
-import type { Client } from "discord.js";
+import type { Client, ChatInputApplicationCommandData } from "discord.js";
 
 import { ApplicationCommandManager, Collection } from "discord.js";
 import { EventEmitter } from "stream";
@@ -7,7 +7,7 @@ import { EventEmitter } from "stream";
 import compareCommands from "./functions/compareCommands";
 
 class commandHandler extends EventEmitter {
-  commandRegister: slashLib.createCommandOptions[];
+  commandRegister: slashLib.commandData[];
   commands: Collection<string, slashLib.command>;
   manager: ApplicationCommandManager;
   client: Client;
@@ -19,15 +19,21 @@ class commandHandler extends EventEmitter {
     this.commandRegister = [];
   }
 
-  createCommand(createCommandOptions: slashLib.createCommandOptions) {
-    this.commandRegister.push(createCommandOptions);
+  /**
+   * adds a command
+   * @param command 
+   * @param handler 
+   * @param arg2
+   */
+  createCommand(command:ChatInputApplicationCommandData, handler: Function, arg2:any) {
+    this.commandRegister.push({command:command,handler:handler,arg2:arg2});
   }
 
   async registerCommands() {
     let currentCommands = await this.manager.fetch();
     let commandRegister = this.commandRegister;
 
-    let createCommands: slashLib.createCommandOptions[] = [];
+    let createCommands: slashLib.commandData[] = [];
 
     // find all commands in commandRegister that dont have equivilant in currentCommands and add them to createCommands
     for (let i = 0; i < commandRegister.length; i++) {
@@ -42,7 +48,6 @@ class commandHandler extends EventEmitter {
 
       if (compareCommands(current, goal)) {
         this.commands.set(current!.id, {
-          discordID: current!.id,
           command: current!,
           handler: commandRegister[i].handler,
           arg2: commandRegister[i].arg2,
@@ -62,7 +67,6 @@ class commandHandler extends EventEmitter {
     for (let i = 0; i < createCommands.length; i++) {
       let cmd = await this.manager.create(createCommands[i].command);
       this.commands.set(cmd.id, {
-        discordID: cmd.id,
         command: cmd,
         handler: createCommands[i].handler,
         arg2: createCommands[i].arg2,
