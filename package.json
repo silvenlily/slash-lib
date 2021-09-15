@@ -1,6 +1,6 @@
 {
   "name": "@silver_lily/slash-lib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "library for handling discord.js slash commands",
   "main": "./build/lib.js",
   "types": "./src/types.d.ts",
@@ -14,8 +14,7 @@
     "access": "public"
   },
   "files": [
-    "./build/",
-    "./src/types.d.ts"
+    "./build/**/*"
   ],
   "keywords": [],
   "author": "lily.slvr",
