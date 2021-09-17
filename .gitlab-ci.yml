@@ -27,6 +27,8 @@ build:
 
 test:
   stage: test
+  dependencies:
+    - build
   script:
     - yarn install
     - yarn test:CI
