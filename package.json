@@ -15,10 +15,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "./build/functions/*",
-    "./build/lib.*"
-  ],
   "keywords": [],
   "author": "lily.slvr",
   "license": "UNLICENSED",
