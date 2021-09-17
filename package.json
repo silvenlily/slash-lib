@@ -1,6 +1,6 @@
 {
   "name": "@silver_lily/slash-lib",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "library for handling discord.js slash commands",
   "main": "./build/lib.js",
   "typings": "./build/lib.d.ts",
