@@ -1,6 +1,7 @@
 image: node:latest
 
 stages:
+  - buildDeps
   - build
   - test
   - deploy
@@ -14,20 +15,23 @@ variables:
   DISCORD_TOKEN: ${CI_DISCORD_TOKEN}
   DEBUG_SERVER: ${CI_DISCORD_DEBUG_SERVER}
 
-cache:
-  key: $CI_COMMIT_REF_SLUG
-  paths:
-    - .npmCache/
+buildDeps:
+  stage: buildDeps
+  script:
+    - yarn install
+  artifacts:
+    paths:
+      - node_modules
+    expire_in: 1 hour
 
 build:
   stage: build
-  before_script:
-    - npm install --cache .npmCache
+  dependencies:
+    - buildDeps
   script:
     - npm run build
   artifacts:
     paths:
-      - package-lock.json
       - build
     expire_in: 1 hour
 
@@ -35,8 +39,7 @@ test:
   stage: test
   dependencies:
     - build
-  before_script:
-    - npm ci --cache .npmCache --prefer-offline
+    - buildDeps
   script:
     - npm run test:CI
 
@@ -45,7 +48,7 @@ publish:
   dependencies:
     - build
   before_script:
-    - npm ci --cache .npmCache --prefer-offline
+    - npm install semantic-release
     - |
       {
         echo "@${CI_PROJECT_ROOT_NAMESPACE}:registry=${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/"
