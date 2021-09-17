@@ -9,7 +9,8 @@
     "start:dev": "nodemon",
     "build": "rimraf ./build && tsc",
     "semantic-release": "semantic-release",
-    "test": "npm run build && node build/testing/test.js"
+    "test": "npm run build && node build/testing/test.js",
+    "test:CI": "node build/testing/test.js"
   },
   "publishConfig": {
     "access": "public"

@@ -28,7 +28,7 @@ build:
 test:
   stage: test
   script:
-    - yarn test
+    - yarn test:CI
 
 publish:
   stage: deploy
