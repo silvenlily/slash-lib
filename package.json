@@ -3,7 +3,7 @@
   "version": "1.1.2",
   "description": "library for handling discord.js slash commands",
   "main": "./build/lib.js",
-  "typings": "./build/types.d.ts",
+  "typings": "./build/lib.d.ts",
   "scripts": {
     "start": "npm run build && node build/index.js",
     "start:dev": "nodemon",
