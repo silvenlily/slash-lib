@@ -10,6 +10,9 @@ function compareOptions(
   current: ApplicationCommandOption[],
   goal: ApplicationCommandOptionData[] | undefined
 ): boolean {
+  // if current is empty return false
+  if (!current) return false;
+
   // if goal is undifined set it to empty array
   goal = goal ?? [];
 

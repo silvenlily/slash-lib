@@ -1,18 +1,40 @@
-import type slashLib from "./types";
-import type { Client, ChatInputApplicationCommandData } from "discord.js";
+import type {
+  Client,
+  ChatInputApplicationCommandData,
+  ApplicationCommand,
+  GuildResolvable,
+  Snowflake,
+} from "discord.js";
 
 import { ApplicationCommandManager, Collection } from "discord.js";
 import { EventEmitter } from "stream";
 
 import compareCommands from "./functions/compareCommands";
 
-class commandHandler extends EventEmitter {
+import type {} from "discord.js";
+
+declare namespace slashLib {
+  type command = {
+    command: ApplicationCommand<{ guild: GuildResolvable }>;
+    handler: Function;
+    arg2?: any;
+  };
+
+  type commandData = {
+    command: ChatInputApplicationCommandData;
+    handler: Function;
+    arg2?: any;
+  };
+}
+
+class commandHandler {
   commandRegister: slashLib.commandData[];
   commands: Collection<string, slashLib.command>;
   manager: ApplicationCommandManager;
   client: Client;
-  constructor(client: Client) {
-    super();
+  debug: Snowflake | false;
+  constructor(client: Client, debugServer?: Snowflake) {
+    this.debug = debugServer ?? false;
     this.manager = new ApplicationCommandManager(client);
     this.commands = new Collection();
     this.client = client;
@@ -21,16 +43,26 @@ class commandHandler extends EventEmitter {
 
   /**
    * adds a command
-   * @param command 
-   * @param handler 
-   * @param arg2
+   * @param command command to add
+   * @param handler handler to be run, will always be passed the interaction as its first item, and arg2 as its second
+   * @param arg2 will be passed as the second argument to the handler when an interaction is triggered
    */
-  createCommand(command:ChatInputApplicationCommandData, handler: Function, arg2:any) {
-    this.commandRegister.push({command:command,handler:handler,arg2:arg2});
+  createCommand(command: ChatInputApplicationCommandData, handler: Function, arg2?: any) {
+    this.commandRegister.push({ command: command, handler: handler, arg2: arg2 });
   }
 
+  /**
+   * registers commands created with createCommand and removes commands not created by createCommand
+   */
   async registerCommands() {
-    let currentCommands = await this.manager.fetch();
+    let currentCommands;
+
+    if (this.debug) {
+      currentCommands = await this.manager.fetch(undefined, { guildId: this.debug });
+    } else {
+      currentCommands = await this.manager.fetch();
+    }
+
     let commandRegister = this.commandRegister;
 
     let createCommands: slashLib.commandData[] = [];
@@ -60,17 +92,32 @@ class commandHandler extends EventEmitter {
 
     // remove commands thats were not removed from currentCommands
     currentCommands.each(async (command) => {
-      this.manager.delete(command);
+      if (this.debug) {
+        this.manager.delete(command, this.debug);
+      } else {
+        this.manager.delete(command);
+      }
     });
 
     // add commands in createCommands
-    for (let i = 0; i < createCommands.length; i++) {
-      let cmd = await this.manager.create(createCommands[i].command);
-      this.commands.set(cmd.id, {
-        command: cmd,
-        handler: createCommands[i].handler,
-        arg2: createCommands[i].arg2,
-      });
+    if (this.debug) {
+      for (let i = 0; i < createCommands.length; i++) {
+        let cmd = await this.manager.create(createCommands[i].command, this.debug);
+        this.commands.set(cmd.id, {
+          command: cmd,
+          handler: createCommands[i].handler,
+          arg2: createCommands[i].arg2,
+        });
+      }
+    } else {
+      for (let i = 0; i < createCommands.length; i++) {
+        let cmd = await this.manager.create(createCommands[i].command);
+        this.commands.set(cmd.id, {
+          command: cmd,
+          handler: createCommands[i].handler,
+          arg2: createCommands[i].arg2,
+        });
+      }
     }
 
     // this allows access inside of the event, given that 'this' will different

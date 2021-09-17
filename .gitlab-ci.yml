@@ -1,11 +1,18 @@
 image: node:latest
 
+stages:
+  - build
+  - test
+  - deploy
+
 workflow:
   rules:
     - if: $CI_COMMIT_BRANCH
 
 variables:
   NPM_TOKEN: ${CI_JOB_TOKEN}
+  DISCORD_TOKEN: ${CI_DISCORD_TOKEN}
+  DEBUG_SERVER: ${CI_DISCORD_DEBUG_SERVER}
 
 build:
   stage: build
@@ -18,7 +25,13 @@ build:
       - build
     expire_in: 1 hour
 
+test:
+  stage: test
+  script:
+    - yarn test
+
 publish:
+  stage: deploy
   before_script:
     - yarn install --frozen-lockfile
     - |
@@ -26,7 +39,6 @@ publish:
         echo "@${CI_PROJECT_ROOT_NAMESPACE}:registry=${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/"
         echo "${CI_API_V4_URL#https?}/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=\${CI_JOB_TOKEN}"
       } | tee --append .npmrc
-  stage: deploy
   script:
     - npm run semantic-release
   rules:
