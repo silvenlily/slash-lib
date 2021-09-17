@@ -27,7 +27,7 @@ declare namespace slashLib {
   };
 }
 
-class commandHandler {
+class SlashLib {
   commandRegister: slashLib.commandData[];
   commands: Collection<string, slashLib.command>;
   manager: ApplicationCommandManager;
@@ -135,4 +135,4 @@ class commandHandler {
   }
 }
 
-export default commandHandler;
+export default SlashLib;
