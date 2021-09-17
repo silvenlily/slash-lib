@@ -28,10 +28,13 @@ build:
 test:
   stage: test
   script:
+    - yarn install
     - yarn test:CI
 
 publish:
   stage: deploy
+  dependencies:
+    - build
   before_script:
     - yarn install --frozen-lockfile
     - |
