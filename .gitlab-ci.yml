@@ -17,12 +17,12 @@ variables:
 cache:
   key: $CI_COMMIT_REF_SLUG
   paths:
-    - .npm/
+    - .npmCache/
 
 build:
   stage: build
   before_script:
-    - npm install --cache .npm
+    - npm install --cache .npmCache
   script:
     - npm run build
   artifacts:
@@ -36,7 +36,7 @@ test:
   dependencies:
     - build
   before_script:
-    - npm ci --cache .npm --prefer-offline
+    - npm ci --cache .npmCache --prefer-offline
   script:
     - npm run test:CI
 
@@ -45,7 +45,7 @@ publish:
   dependencies:
     - build
   before_script:
-    - npm ci --cache .npm --prefer-offline
+    - npm ci --cache .npmCache --prefer-offline
     - |
       {
         echo "@${CI_PROJECT_ROOT_NAMESPACE}:registry=${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/"

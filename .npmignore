@@ -1,4 +1,5 @@
 build/testing/*
+npmCache/*
 src/*
 .env
 .gitignore
