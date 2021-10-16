@@ -35,7 +35,12 @@ class SlashLib {
   debug: Snowflake | false;
   constructor(client: Client, debugServer?: Snowflake) {
     this.debug = debugServer ?? false;
-    this.manager = new ApplicationCommandManager(client);
+
+    if (!client.application) {
+      throw new Error("SlashLib must be constructed after the ready event");
+    }
+
+    this.manager = client.application!.commands;
     this.commands = new Collection();
     this.client = client;
     this.commandRegister = [];
