@@ -19,8 +19,8 @@ function compareOptions(
   goal = goal ?? [];
 
   // if current is empty array then goal must be empty array or they arent equal
-  if (current == []) {
-    if (goal == []) {
+  if (current.length == 0) {
+    if (goal.length == 0) {
       return true;
     } else {
       return false;

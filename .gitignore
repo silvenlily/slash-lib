@@ -1,5 +1,4 @@
 node_modules/
-build/*
 .npmCache/*
 config/*
 package-lock.json
