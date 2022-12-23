@@ -1,5 +1,5 @@
 {
-  "name": "@silver_lily/slash-lib",
+  "name": "silver-lily-slash-lib",
   "version": "1.1.9",
   "description": "library for handling discord.js slash commands",
   "main": "./build/lib.js",
